@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+// #include <iterator> 
 #include <unordered_map>
 #include <curl/curl.h> //for downloading webpages
 #include <stdio.h>
@@ -29,21 +30,26 @@ void get_page(const char* url, const char* file_name)
 //extract links from file
 vector<string> extract_hyperlinks(string html_file_name )
 {
-    string html; // here we will store the html from file
-    ifstream read;
-    read.open(html_file_name); 
-    while(!read.eof())
-    {
-      if(read.eof()) break; 
-      char ch;
-      read.get(ch);
-      html.push_back(ch); 
+    // open the file
+    ifstream read(html_file_name);
+    if (!read) {
+        cerr << "Failed to open file: " << html_file_name << endl;
+        return {};
     }
-    read.close();
-    static const regex hl_regex( "<a href=\"(.*?)\">", regex_constants::icase ); // initializing a regular expression object h1_regex that finds all hyperlinks in html file,icase mean not case sensitive
-    vector<string> links; // it will store all the links read from file
-    //below line will store all found links in vector
-    copy(sregex_token_iterator(html.begin(), html.end(), hl_regex, 1),sregex_token_iterator(),back_inserter(links));
+
+    // read entire file into string
+    string html(
+        (istreambuf_iterator<char>(read)),
+        istreambuf_iterator<char>()
+    );
+    
+    static const regex hl_regex("<a href=\"(.*?)\">", regex_constants::icase);
+    vector<string> links;
+    copy(
+        sregex_token_iterator(html.begin(), html.end(), hl_regex, 1),
+        sregex_token_iterator(),
+        back_inserter(links)
+    );
     return links;
 }
 
