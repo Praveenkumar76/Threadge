@@ -1,4 +1,3 @@
-vscode
+.vscode/
 *.exe
 *.txt
-.gitignore
